@@ -1,16 +1,17 @@
-# sadeematask
+# Sadeema Task
 
-A new Flutter project.
+✨ Core Features
 
-## Getting Started
+🔐 Secure Login via API (Email/Password).
 
-This project is a starting point for a Flutter application.
+📚 Lessons & Interactive Quizzes with progress tracking.
 
-A few resources to get you started if this is your first Flutter project:
+🌎 Courses in multiple languages (English app interface).
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+📊 Real-time Dashboard with personalized recommendations.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+💾 Save for Later – bookmark any course/lesson.
+
+🎨 Modern Animated UI with Material Design 3.
+
+✅ Unit & Widget Tests included (≥70% coverage).
