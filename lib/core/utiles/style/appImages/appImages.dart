@@ -4,7 +4,7 @@ class Appimages {
   static const String appLogo = 'assets/images/app/appLogo.png';
   static const List<String> homeAppBar = [
     'assets/images/home/date-range-svgrepo-com.svg',
-    'assets/images/home/bell-svgrepo-com.svg',
+    'assets/images/home/profile.svg',
   ];
   static const String user = 'assets/images/home/user.jpeg';
   static const String study = 'assets/images/home/study.svg';
