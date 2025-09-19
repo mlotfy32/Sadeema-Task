@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CustomeClip extends StatelessWidget {
-  const CustomeClip({super.key, this.onTap, required this.isLogin});
+  const CustomeClip({super.key, this.onTap});
   final void Function()? onTap;
-  final bool isLogin;
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -25,7 +24,7 @@ class CustomeClip extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.topCenter,
                     child: Text(
-                      isLogin == true ? 'Sign In' : 'Sign Up',
+                      'Sign In',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18,

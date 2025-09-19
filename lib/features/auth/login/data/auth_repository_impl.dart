@@ -1,63 +1,54 @@
-import 'dart:developer';
+import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:sadeema_task/core/constants/constants.dart';
+import 'package:sadeema_task/core/error/failure.dart';
+import 'package:sadeema_task/features/auth/login/data/models/successLoginModel.dart';
 
-import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sadeema_task/core/utiles/helper.dart';
-import 'package:sadeema_task/features/auth/login/data/chaceLogin.dart';
-import 'package:sadeema_task/features/auth/login/domain/auth_repository.dart';
-import 'package:sadeema_task/features/auth/login/domain/user_entity.dart';
-import 'package:firebase_auth/firebase_auth.dart' as fb;
+abstract class AuthRepositoryImpl {
+  Future<Either<Failure, SuccessLoginModel>> login({
+    required String emailOrPhone,
+    required String password,
+    required String type,
+    required String notiId,
+    required String mobileId,
+    required String mobileType,
+  });
+}
 
-class AuthRepositoryImpl implements AuthRepository {
-  final fb.FirebaseAuth _firebaseAuth;
-
-  AuthRepositoryImpl({fb.FirebaseAuth? firebaseAuth})
-    : _firebaseAuth = firebaseAuth ?? fb.FirebaseAuth.instance;
+class AuthRemoteDataSourceImpl implements AuthRepositoryImpl {
+  AuthRemoteDataSourceImpl();
 
   @override
-  Future<UserEntity> login(String email, String password) async {
+  Future<Either<Failure, SuccessLoginModel>> login({
+    required String emailOrPhone,
+    required String password,
+    required String type,
+    required String notiId,
+    required String mobileId,
+    required String mobileType,
+  }) async {
+    final _baerUrl = dotenv.env['BASE_API_URL'];
+    final dio = Dio();
+
+    final data = {
+      "email_or_phone": emailOrPhone,
+      "password": password,
+      "type": 'parent',
+      "noti_id": notiId,
+      "mobile_id": mobileId,
+      "mobile_type": mobileType,
+    };
     try {
-      final response = await _firebaseAuth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
+      final response = await dio.post(
+        '$_baerUrl${Constants.loginEndPoint}',
+        data: data,
       );
-      Helper.FlutterToast(title: 'Success LogIn', success: true);
-      //TODO:
-      CachLogin.chacheLogin(
-        accessToken: response.user!.uid,
-        email: email,
-        pass: password,
-        signInMethod: 'email&password',
-      );
-      return UserEntity(
-        userId: response.user!.uid,
-        email: email,
-        password: password,
-      );
-    } on fb.FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        Helper.FlutterToast(
-          title: 'There is no user with this email.',
-          success: false,
-        );
-
-        throw Exception();
-      } else if (e.code == 'wrong-password') {
-        Helper.FlutterToast(title: 'Incorrect password.', success: false);
-
-        throw Exception();
-      } else {
-        Helper.FlutterToast(
-          title: 'Something went wrong, please try again.',
-          success: false,
-        );
-
-        throw Exception('Something went wrong, please try again.');
-      }
+      return right(SuccessLoginModel.fromJson(response.data['data']));
+    } on DioException catch (e) {
+      return left(ServerFailure.fromDioError(e));
     } catch (e) {
-      Helper.FlutterToast(title: 'Unexpected error: $e', success: false);
-
-      throw Exception();
+      return left(ServerFailure('Something went wrong please try again'));
     }
   }
 }
